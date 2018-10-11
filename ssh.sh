@@ -26,6 +26,10 @@ if ! [ -f ${SHELLYBASE}/inc ]; then
 	exit 1
 else 
 	. ${SHELLYBASE}/inc
+	# load additional custom includes as well
+	for file in inc/*.inc; do
+		source $file
+	done
 fi
 
 if ! [ -f ${SHELLYBASE}/ssh.conf ]; then
