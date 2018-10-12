@@ -21,14 +21,14 @@
 SHELLYBASE=$(dirname $0)
 
 # include variables and functions
-if ! [ -f ${SHELLYBASE}/inc ]; then
-	echo "${SHELLYBASE}/inc missing!"
+if ! [ -f ${SHELLYBASE}/base.inc ]; then
+	echo "${SHELLYBASE}/base.inc missing!"
 	exit 1
 else 
-	. ${SHELLYBASE}/inc
+	. ${SHELLYBASE}/base.inc
 	# load additional custom includes as well
 	for file in inc/*.inc; do
-		source $file
+		[[ -f "$file" ]] && source $file
 	done
 fi
 
