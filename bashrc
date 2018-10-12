@@ -20,6 +20,9 @@ shelly_help () {
 	echo -e "${yellow}ssh_unsafe${normal}\t\tMake SSHd unsafe (allow password login)\n";
 	echo -e "${yellow}ssh_safe${normal}\t\tMake SSHd safe (key authentication only)\n";
 };
+mkcdir () {
+	mkdir $1 && cd $_;
+};
 invoke_service () {
 	service="${1}";
 	action="${2}";
