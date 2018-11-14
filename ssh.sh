@@ -49,7 +49,7 @@ if [ -z "${1}" ] || [ "${1}" = "-h" ] || [ "${1}" = "--help" ] ; then
 fi
 
 host="${1}"; shift
-ip=$(dig +short ${host})
+ip=$(dig +short ${host}|grep '^[.0-9]*$')
 if [[ -z ${ip} ]]; then
 	ip=${host}
 fi
