@@ -1,17 +1,12 @@
+export BASHRC=$LC_NAME;
+export INIT=$LC_IDENTIFICATION;
+. /etc/profile;
+load () {
+	eval $(echo "$BASHRC" | base64 -d | gunzip -c 2>/dev/null);
+};
 if grep -q "^[0-$(grep -c processor /proc/cpuinfo)]\." /proc/loadavg; then
-	if [ -x /usr/bin/base64 ]; then
-		eval $(echo "$LC_NAME" | base64 -d | gunzip -c 2>/dev/null);
-	else
-		eval $(perl -e 'use MIME::Base64;print decode_base64($ENV{"LC_NAME"});' | gunzip -c 2>/dev/null);
-	fi;
+	load;
 else
 	PS1='\[\e[1;31m\]$(rc=$?;if [ "$rc" != "0" ]; then echo -n "$rc ";fi)\[\e[0m\]\[\e[1;34m\]\A ($(who|wc -l)) \h:\w$\[\e[0m\] ';
 	echo -en "\e[1;31m$(printf %73s |tr " " "#")\n#\t\t\t\tLOAD TOO HIGH\t\t\t\t#\n$(printf %73s |tr " " "#")\n\e[0m";
-	load () {
-		if [ -x /usr/bin/base64 ]; then
-			eval $(echo "$LC_NAME" | base64 -d | gunzip -c 2>/dev/null);
-		else
-			eval $(perl -e 'use MIME::Base64;print decode_base64($ENV{"LC_NAME"});' | gunzip -c 2>/dev/null);
-		fi;
-	};
 fi;

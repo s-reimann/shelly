@@ -728,7 +728,7 @@ print_pacemaker_status () {
 	fi;
 };
 : bind is used to make F10 work as shelly. e21 = "F10";
-bind '"\e[21~":"eval $(echo \"$LC_BASHRC\"|base64 -d|gunzip -c);history -d $((HISTCMD-1))\n"';
+bind '"\e[21~":"eval $(echo \"$BASHRC\"|base64 -d|gunzip -c);history -d $((HISTCMD-1))\n"';
 alias ls='ls --color';
 alias grep='grep --color';
 alias vim='vim -c ":set mouse=" -c ":set incsearch" -c "syn on" -c ":set ignorecase"';
