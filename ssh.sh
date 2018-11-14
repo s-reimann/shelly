@@ -67,4 +67,4 @@ while getopts "p:" opt > /dev/null 2>&1 ; do
 done
 
 available ${ip} ${port:-22}
-${expect} ssh ${ip} -p${port:-22} $@
+${expect} ssh -t ${ip} -p${port:-22} $@ "bash --noprofile"
