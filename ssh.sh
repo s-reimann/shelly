@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #=======================================================================#
 #									#
 #		 $$$$$$\   $$$$$$\  $$\   $$\ 				#
@@ -24,7 +24,7 @@ SHELLYBASE=$(dirname $0)
 if ! [ -f ${SHELLYBASE}/base.inc ]; then
 	echo "${SHELLYBASE}/base.inc missing!"
 	exit 1
-else 
+else
 	. ${SHELLYBASE}/base.inc
 	# load additional custom includes as well
 	for file in inc/*.inc; do
