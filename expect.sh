@@ -1,4 +1,4 @@
-#!/usr/bin/expect
+#!/usr/bin/env expect
 set timeout 5
 set cmd1 {eval $(echo "${LC_IDENTIFICATION}" | base64 -d); history -d $((HISTCMD-1))}
 
