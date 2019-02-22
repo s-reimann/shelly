@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #===============================================================#
 #								#
 #		$$$$$$\ $$\   $$\  $$$$$$\ 			#
@@ -99,7 +99,7 @@ function available () {
         local port=${2:-22} # take given port or default 22
 	# check if host is dead (-c = count, -W = timeout, -q = quiet)
 	lc_temp=$(mktemp)
-	(until ping -c1 -W1 -nq ${host} 2>&1 &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp} ) &
+	(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until ping -c1 -W1 -nq ${host} 2>&1 &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp} ) &
 	sleep 0.01
 	while [ -f ${lc_temp} ] ; do
 		for num in 52 88 124 160 196 160 124 88 ; do
@@ -109,7 +109,7 @@ function available () {
 	done
 	tput el
 	lc_temp=$(mktemp)
-	(until nc -nzw2 ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
+	(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until nc -nzw2 ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
 	sleep 0.01
 	while [ -f ${lc_temp} ] ; do
 		for num in 130 166 172 214 11 214 172 166 ; do
