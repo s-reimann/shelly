@@ -39,7 +39,7 @@ else
 	. ${SHELLYBASE}/ssh.conf
 fi
 
-usage () {
+usage() {
 	echo "Usage: $0 hostname [port] [SSH options]"
 	exit 0
 }

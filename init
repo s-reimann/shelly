@@ -1,7 +1,7 @@
 export BASHRC=$LC_NAME;
 export INIT=$LC_IDENTIFICATION;
 . /etc/profile;
-load () {
+load() {
 	eval $(echo "$BASHRC" | base64 -d | gunzip -c 2>/dev/null);
 };
 if grep -q "^[0-$(grep -c processor /proc/cpuinfo)]\." /proc/loadavg; then

@@ -1,4 +1,4 @@
-shelly_help () {
+shelly_help() {
 	local green=$(tput setaf 2);
 	local yellow=$(tput setaf 3);
 	local blue=$(tput setaf 6);
@@ -20,10 +20,10 @@ shelly_help () {
 	echo -e "${yellow}ssh_unsafe${normal}\t\tMake SSHd unsafe (allow password login)\n";
 	echo -e "${yellow}ssh_safe${normal}\t\tMake SSHd safe (key authentication only)\n";
 };
-mkcdir () {
+mkcdir() {
 	mkdir $1 && cd $_;
 };
-invoke_service () {
+invoke_service() {
 	service="${1}";
 	action="${2}";
 	if [ "$(pidof init)" = 1 ] ; then
@@ -42,15 +42,15 @@ invoke_service () {
 		fi;
 	fi;
 };
-hide () {
+hide() {
 	history -d $((HISTCMD-1));
 };
-not_debian () {
+not_debian() {
 	if [ -f /etc/debian_version ] ; then 
 		return 1;
 	fi;
 };
-colorcheck () { 
+colorcheck() {
 	red=$(tput setaf 1);
 	green=$(tput setaf 2);
 	boldgreen=$(tput setaf 2; tput bold);
@@ -66,7 +66,7 @@ colorcheck () {
 	esac;
 	echo -en "[$msgcolor]";
 };
-log_msg () {
+log_msg() {
 	red=$(tput setaf 1);
 	green=$(tput setaf 2);
 	orange=$(tput setaf 3);
@@ -91,7 +91,7 @@ log_msg () {
 	echo -n $msgcolor;
 	printf "%${col}s" "$statuscolor";
 };
-maildel () { 
+maildel() {
 	n="0";
 	pattern="${1}";
 	if [ -z ${pattern} ]; then 
@@ -104,7 +104,7 @@ maildel () {
 	done;
 	echo "$n mails deleted";
 };
-ssh_unsafe () { 
+ssh_unsafe() {
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
 	fi;
@@ -116,7 +116,7 @@ ssh_unsafe () {
 	invoke_service sshd restart;
 	invoke_service ssh restart;
 };
-ssh_safe () {
+ssh_safe() {
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
 	fi;
@@ -129,17 +129,17 @@ ssh_safe () {
 	invoke_service sshd restart;
 	invoke_service ssh restart;
 };
-pf_safe () {
+pf_safe() {
 	config_dir="$(postconf config_directory|awk '{print $3}')";
 	if [ -d $config_dir ]; then
 		postconf -e "inet_interfaces = 127.0.0.1";
 		invoke_service postfix restart;
 	fi;
 };
-psauxf () {
+psauxf() {
 	ps auxfw|grep -v ]$;
 };
-new_screen () {
+new_screen() {
 	if [ -x /usr/bin/screen ]; then
 		unset TTY;
 		TTY=$(tty|awk -F/ '{print $4}');
@@ -154,7 +154,7 @@ new_screen () {
 	fi;
 	hide;
 };
-which_pkg () {
+which_pkg() {
 	local sysos=$(print_os -o);
 	if [[ "${sysos}" -ne "debian" ]] || [[ "${sysos}" -ne "ubuntu" ]]; then 
 		echo "Sorry, this command only runs on Debian or Ubuntu (for now).";
@@ -183,11 +183,11 @@ which_pkg () {
 		fi;
 	fi;
 };
-magic_sysrq_reboot () {
+magic_sysrq_reboot() {
 	echo 1 > /proc/sys/kernel/sysrq;
 	echo b > /proc/sysrq-trigger;
 };
-vhosts_search () {
+vhosts_search() {
 	string="$1";
 	if [ -z ${string} ]; then
 		apache2ctl -t -D DUMP_VHOSTS 2>&1;
@@ -195,13 +195,13 @@ vhosts_search () {
 		apache2ctl -t -D DUMP_VHOSTS 2>&1|grep ${string};
 	fi;
 };
-cmount () {
+cmount() {
 	mount |grep -Ev "(sysfs|proc|tmpfs|securityfs|cgroup|autofs|mqueue|hugetlbfs|rpc|devpts|pstore|debugfs)"|column -t;
 };
-connects () {
+connects() {
 	netstat -nt | awk -F: '{print $2}' | sort | uniq -c | sort -n | column -t;
 };
-sysupdate () {
+sysupdate() {
 	if [ -f /etc/os-release ] ; then
 		local sysos=$(print_os -o);
 		if [ "${sysos}" = "debian" ] || [ "${sysos}" = "ubuntu" ] ; then
@@ -217,7 +217,7 @@ sysupdate () {
 		return;
 	fi;
 };
-sos () {
+sos() {
 	file="/tmp/sos";
 	uname -a > ${file};
 	uptime >> ${file};
@@ -235,7 +235,7 @@ sos () {
 	echo "saved to: /tmp/sos";
 	less /tmp/sos;
 };
-php_sendmail () {
+php_sendmail() {
 	if [ -x $(which php) ] ; then
 		read -p "RCPT TO: " PHP_MY_ADDRESS;
 		export PHP_MY_ADDRESS;
@@ -247,12 +247,12 @@ php_sendmail () {
 		return 1;
 	fi;
 };
-mailme () {
+mailme() {
 	echo -en "rcpt to: ";
 	read address;
 	echo ${?}|mail -s $(hostname --fqdn) ${address};
 };
-root_or_exit () {
+root_or_exit() {
 	id=$(which id);
 	if [ ! -x ${id} ]; then
 		return 0;
@@ -262,7 +262,7 @@ root_or_exit () {
 		fi;
 	fi;
 };
-check_pamsu () {
+check_pamsu() {
 	txt="PAM su";
 	if [ -f /etc/pam.d/su ]; then
 		if ! grep -q '^auth[ \t]\+requisite[ \t]\+pam_deny.so$' /etc/pam.d/su; then
@@ -270,7 +270,7 @@ check_pamsu () {
 		fi;
 	fi;
 };
-check_perm () {
+check_perm() {
 	dst="$1";
 	permok="$2";
 	txt="perms $dst (${permok})";
@@ -291,19 +291,19 @@ check_perm_file ()
 		fi;
 	fi;
 };
-check_dmesg () {
+check_dmesg() {
 	txt="dmesg";
 	if dmesg |grep -qiE "(segfault|call trace|blocked for more)";then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_diskerr () {
+check_diskerr() {
 	txt="disk failure";
 	if dmesg|grep -qE "(media error|DRDY|I/O error)"; then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_inodes () {
+check_inodes() {
 	txt="inode usage";
 	if df -ix tmpfs|grep -qE "(100%|9.%)"; then
 		log_msg "${txt}" 1;
@@ -315,13 +315,13 @@ check_inodes () {
 		log_msg "${txt}" 0;
 	fi;
 };
-check_reboot () {
+check_reboot() {
 	txt="REBOOT";
 	if [ -f /var/run/reboot-required ] ; then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_date () {
+check_date() {
 	txt="date";
 	if [[ ! -x $(which wget 2>/dev/null) ]]; then
 		colorcheck "${txt}" 1;
@@ -335,7 +335,7 @@ check_date () {
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_ntp () {
+check_ntp() {
 	txt="NTP state";
 	if [ -x /usr/sbin/ntpd ]; then
 		if [ "$1" = "detect" ]; then
@@ -365,7 +365,7 @@ check_ntp () {
 	fi;
 };
 NTP=$(check_ntp detect);
-check_pkg () {
+check_pkg() {
 	pkg="$1";
 	full=$(/usr/bin/which $1 2>/dev/null); : ${full:="false"};
 	txt="${pkg}";
@@ -373,7 +373,7 @@ check_pkg () {
 		colorcheck "${txt}" 2;
 	fi;
 };
-check_rootl () {
+check_rootl() {
 	txt="SSH root login";
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
@@ -387,7 +387,7 @@ check_rootl () {
 		fi;
 	fi;
 };
-check_pam () {
+check_pam() {
 	txt="SSH password auth";
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
@@ -406,7 +406,7 @@ check_pam () {
 		fi;
 	fi;
 };
-check_smotd () {
+check_smotd() {
 	txt="SSH MOTD";
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
@@ -416,7 +416,7 @@ check_smotd () {
 		colorcheck "${txt}" 2;
 	fi;
 };
-check_spass () {
+check_spass() {
 	txt="SSH pass auth";
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
@@ -430,7 +430,7 @@ check_spass () {
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_sshcra () {
+check_sshcra() {
 	txt="SSH CRA";
 	if ! [ -x /usr/sbin/sshd ]; then
 		return;
@@ -444,7 +444,7 @@ check_sshcra () {
 		fi;
 	fi;
 };
-check_iptables () {
+check_iptables() {
 	txt="firewall";
 	if iptables -L -n &>/dev/null ; then
 		if ! iptables -L -n |grep -qE "(REJECT|DROP)"; then
@@ -454,7 +454,7 @@ check_iptables () {
 		colorcheck "no ${txt}" 2;
 	fi;
 };
-check_procs () {
+check_procs() {
 	txt="procs";
 	ps_count=$(ps aux|wc -l);
 	proc_count=$(/bin/ls /proc|grep "[0-9]"|wc -l);
@@ -462,7 +462,7 @@ check_procs () {
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_cdns () { 
+check_cdns() {
 	txt="caching dns";
 	count=$(grep -c nameserver /etc/resolv.conf);
 	if [ ${count} = 0 ]; then
@@ -471,13 +471,13 @@ check_cdns () {
 		colorcheck "${txt}" 2;
 	fi;
 };
-check_hosts () {
+check_hosts() {
 	txt="hosts";
 	if getent hosts | awk '{ for ( host=2; host <= NF; host++ ) { hosts[$host] ++  } } END { for ( h in hosts ) { print h, hosts[h] }}'|egrep -qv "(^localhost|1$)"; then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_postconf () {
+check_postconf() {
 	txt="external postfix";
 	if [ -x /usr/sbin/postconf ]; then
 		if ! grep -qE "reject_rbl_client" <<<$(postconf smtpd_recipient_restrictions smtpd_client_restrictions); then
@@ -491,35 +491,35 @@ check_postconf () {
 		fi;
 	fi;
 };
-check_dir () {
+check_dir() {
 	directory="${1}";
 	txt="${directory}";	
 	if [ ! -d $directory ]; then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_file () {
+check_file() {
 	file="${1}";
 	txt="${file}";
 	if [ ! -f ${file} ]; then
 		colorcheck "${txt}" 1;
 	fi;
 };
-check_disk_usage () {
+check_disk_usage() {
 	df -x tmpfs | grep -E "(8.%)" | awk '{print $(NF-1), $NF}' | uniq | while read line; do colorcheck "$line" 2; done;
 	df -x tmpfs | grep -E "(100%|9.%)"| awk '{print $(NF-1), $NF}' | uniq | while read line; do colorcheck "$line" 1; done;
 };
-check_hostname () {
+check_hostname() {
 	if ! hostname -f &>/dev/null; then
 		colorcheck "hostname" 1;
 	fi;
 };
-check_syncookies () {
+check_syncookies() {
         if ! [ $(sysctl net.ipv4.tcp_syncookies|awk '{print $3}') = "1" ]; then
 		colorcheck "syncookies" 1;
 	fi;
 };
-check_unpriv_unsc () {
+check_unpriv_unsc() {
 	if sysctl kernel.unprivileged_userns_clone &>/dev/null ; then
 		if [ $(sysctl kernel.unprivileged_userns_clone|awk '{print $3}') = "1" ]; then
 			colorcheck "sysctl: user namespace" 1;
@@ -527,13 +527,13 @@ check_unpriv_unsc () {
 	fi;
 };
 
-check_iowait () {
+check_iowait() {
 	if ps x | awk '{if ($3 ~ "D") print}'|grep -q D; then
 		colorcheck "IOwait" 1;
 	fi;
 };
 
-fix_syncookies () {
+fix_syncookies() {
 	txt="Activating tcp_syncookies";
 	if [ -f /etc/sysctl.conf ]; then
 		sed -i 's/^#net.ipv4.tcp_syncookies.*/net.ipv4.tcp_syncookies=1/' /etc/sysctl.conf;
@@ -547,7 +547,7 @@ fix_syncookies () {
 		log_msg "${txt} failed! File not found." 1;
 	fi;
 };
-fix_pamsu () {
+fix_pamsu() {
         if [ -f /etc/pam.d/su ] ; then
                 if ! grep -q '^auth[ \t]\+requisite[ \t]\+pam_deny.so$' /etc/pam.d/su; then
                         echo -n "Fixing PAM.d su settings (disabling su for normal users)... ";
@@ -558,7 +558,7 @@ fix_pamsu () {
                 fi;
         fi;
 };
-fix_locales () {
+fix_locales() {
 	if not_debian ; then
 		echo "Sorry, this command is Debian only (for now).";
 		return;
@@ -571,10 +571,10 @@ fix_locales () {
 		echo "Installed common locales. Please relog to this server for changes to take effect.";
 	fi;
 };
-partitions () {
+partitions() {
 	awk 'FNR>2 {printf ("/dev/"$4"\t"); printf( "%.0f GB\n",$3/1024/1024) }' /proc/partitions|sort;
 };
-print_os () {
+print_os() {
 	if [ -f /etc/os-release ] ; then
 		if [ "$1" = "-o" ] ; then
 			local sysos=$(awk -F "=" '$1 == "ID" {print $NF}' /etc/os-release | sed 's/"//g');
@@ -606,7 +606,7 @@ print_os () {
 		echo;
 	fi;
 };
-print_tcp_ports () {
+print_tcp_ports() {
 	local sysos=$(print_os -o);
 	if [ "${sysos}" = debian ] ; then
 		deb_ver=$(grep -oE "(^[0-9]|sid)" /etc/debian_version);
@@ -639,7 +639,7 @@ print_tcp_ports () {
 		done;
 	fi;
 };
-print_hardware_info () {
+print_hardware_info() {
 	if [ -x /usr/sbin/dmidecode ] && dmidecode | grep -q "SMBIOS.*present." ; then
 		echo -en "hardware\t: ";
 		colorcheck "$(echo $(($(awk "/MemT/ {print \$2}" /proc/meminfo)/1000000)))G RAM" 2;
@@ -656,12 +656,12 @@ print_hardware_info () {
 		fi;
 	fi;
 };
-print_system_info () {
+print_system_info() {
 	users=$(/usr/bin/who|/usr/bin/wc -l);
 	procs=$(/bin/ps aux|/usr/bin/wc -l);
 	echo -en "system\t\t: kernel $(uname -rm), uptime: $(uptime | awk -F\, '{print $1}' | awk '{print $3,$4}'), $(if [ ${users} -gt "1" ]; then echo -e "\033[0;31m"${users}"\033[0m"; else echo "${users}"; fi) logged in user(s), $(if [ ${procs} -gt "300" ]; then echo -e "\033[0;31m"${procs}"\033[0m"; else echo "${procs}"; fi) processes\n";
 };
-print_network_info () {
+print_network_info() {
 	c_grn_ul="\e[4;32m";
 	c_grn="\e[3;32m";
 	c_red="\e[3;31m";
@@ -699,7 +699,7 @@ print_network_info () {
 		echo;
 	done;
 };
-print_ssh_keys () {
+print_ssh_keys() {
 	if [ -f ~/.ssh/authorized_keys ] || [ -f ~/.ssh/authorized_keys2 ] ; then
 		echo -en "ssh keys\t: ";
 		sed 's/^.*ssh/ssh/;/^$/d;/^#/d;s/\(ssh\|ecdsa\).*AAAA[^ ]\+ //;s/^[ \t]//' ~/.ssh/authorized_keys ~/.ssh/authorized_keys2 2>/dev/null | while read key; do
@@ -710,19 +710,19 @@ print_ssh_keys () {
 	fi;
 	echo;
 };
-print_dns_info () {
+print_dns_info() {
 	if [ -f /etc/resolv.conf ]; then
 		echo -e "DNS\t\t: $(awk '$1 == "nameserver" {print "\033[0;35m"$2"\033[0m"};$1 == "domain" {print "\033[0;35m(domain: "$2")\033[0m"};$1 == "search" {print "\033[0;35m(search: "$2")\033[0m"}' /etc/resolv.conf | sort -r | xargs)";
 	fi;
 };
-print_drbd_status () {
+print_drbd_status() {
 	if ! not_debian ; then
 		if [ -e /proc/drbd ] ; then
 			tail -n+3 /proc/drbd | awk '$1 ~ /^[0-9]+:$/ {print $1,$2,$3,$4}' | while read line ; do echo -e "DRBD\t\t: \033[0;36m${line}\033[0m"; done;
 		fi;
 	fi;
 };
-print_pacemaker_status () {
+print_pacemaker_status() {
 	if [ -x /usr/sbin/crm_mon ]; then
 		echo -e "pacemaker\t: \033[0;36m$(crm_mon -s)\033[0m";
 	fi;
