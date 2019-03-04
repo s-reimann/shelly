@@ -642,7 +642,7 @@ print_tcp_ports() {
 print_hardware_info() {
 	if [ -x /usr/sbin/dmidecode ] && dmidecode | grep -q "SMBIOS.*present." ; then
 		echo -en "hardware\t: ";
-		colorcheck "$(echo $(($(awk "/MemT/ {print \$2}" /proc/meminfo)/1000000)))G RAM" 2;
+		colorcheck "$(awk '$1 == "MemTotal:" {printf("%.1f\n",$2/1024/1024);}' /proc/meminfo)GiB RAM" 2;
 		colorcheck "$(/bin/grep -c processor /proc/cpuinfo) CPU" 2;
 
 		if [ "$(dmidecode --type system|awk -F ":" '$1 == "\tManufacturer" {print $NF}')" = " VMware, Inc." ]; then
