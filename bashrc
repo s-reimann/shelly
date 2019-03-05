@@ -640,21 +640,25 @@ print_tcp_ports() {
 	fi;
 };
 print_hardware_info() {
+	echo -en "hardware\t: ";
+	colorcheck "$(awk '$1 == "MemTotal:" {printf("%.1f\n",$2/1024/1024);}' /proc/meminfo)GiB RAM" 2;
+	colorcheck "$(/bin/grep -c processor /proc/cpuinfo) CPU" 2;
 	if [ -x /usr/sbin/dmidecode ] && dmidecode | grep -q "SMBIOS.*present." ; then
-		echo -en "hardware\t: ";
-		colorcheck "$(awk '$1 == "MemTotal:" {printf("%.1f\n",$2/1024/1024);}' /proc/meminfo)GiB RAM" 2;
-		colorcheck "$(/bin/grep -c processor /proc/cpuinfo) CPU" 2;
-
 		if [ "$(dmidecode --type system|awk -F ":" '$1 == "\tManufacturer" {print $NF}')" = " VMware, Inc." ]; then
 			colorcheck "VMware Virtual Platform" 2;
-		echo;
+		elif [ "$(dmidecode --type system|awk -F ":" '$1 == "\tProduct Name" {print $NF}')" = " KVM" ]; then
+			colorcheck "KVM Virtual Platform" 2;
 		else
 			colorcheck "$(dmidecode --type system|awk -F : '{if ($1 ~ /Manu/ || $1 ~ /Product/) print $2}' | xargs echo|sed -e 's/To be filled.*/n\/a/')" 2;
 			colorcheck "$(dmidecode --type system|awk -F : '{if ($1 ~ /Serial/) print "SN"$2}' | xargs echo|sed -e 's/To be filled.*/n\/a/')" 2;
 			colorcheck "$(dmidecode --type bios|awk -F : '{if ($1 ~ /Vendor/ || $1 ~ /Version/ || $1 ~/Release/) print $2}' | xargs echo|sed -e 's/To be filled.*/n\/a/')" 2;
-			echo;
+		fi;
+	else
+		if dmesg 2>/dev/null | grep -q "Hypervisor detected: Xen" ; then
+			colorcheck "Xen Virtual Platform" 2;
 		fi;
 	fi;
+	echo;
 };
 print_system_info() {
 	users=$(/usr/bin/who|/usr/bin/wc -l);
