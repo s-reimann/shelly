@@ -2,6 +2,9 @@
 
 All recent changes. Newest come first.
 
+## 2019-03-08
++ Mac users: come right in! Slight adjustments were made to get shelly working on MacOS as well.
+
 ## 2018-11-13
  - An update of the "base-files" package Ubuntu released on August 20th caused shelly to fail. The newly added file /etc/profile.d/01-locale-fix.sh is meant to overwrite LC_ variables during login in case they don't contain an already installed locale (changelog: http://changelogs.ubuntu.com/changelogs/pool/main/b/base-files/base-files_10.1ubuntu2.3/changelog). To respect this behavior and to worship the first rule of shelly ("no adjustment required on remote side to run shelly"), a few adaptions were made:
 	 - ssh.sh: the ssh command will start a bash on the remote system with the --noprofile option to bypass /etc/profile (and eventually /etc/profile.d/01-locale-fix.sh as well)
