@@ -2,6 +2,9 @@
 
 All recent changes. Newest come first.
 
+## 2019-03-18
++ minor change: if the SSH port of a system is open, the available() function will immediately end.
+
 ## 2019-03-08
 + Mac users: come right in! Slight adjustments were made to get shelly working on MacOS as well.
 

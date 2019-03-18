@@ -97,25 +97,27 @@ function available () {
 		exit 1
 	fi
         local port=${2:-22} # take given port or default 22
-	# check if host is dead (-c = count, -W = timeout, -q = quiet)
-	lc_temp=$(mktemp)
-	(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until ping -c1 -W1 -nq ${host} 2>&1 &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp} ) &
-	sleep 0.01
-	while [ -f ${lc_temp} ] ; do
-		for num in 52 88 124 160 196 160 124 88 ; do
-			echo -en "\r\033[38;5;${num}mwaiting for host to come online\033[0m\r"
-			sleep 0.12
+	if ! nc -nzw1 ${host} ${port} &>/dev/null; then
+		# check if host is dead (-c = count, -W = timeout, -q = quiet)
+		lc_temp=$(mktemp)
+		(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until ping -c1 -W1 -nq ${host} 2>&1 &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp} ) &
+		sleep 0.05
+		while [ -f ${lc_temp} ] ; do
+			for num in 52 88 124 160 196 160 124 88 ; do
+				echo -en "\r\033[38;5;${num}mwaiting for host to come online\033[0m\r"
+				sleep 0.12
+			done
 		done
-	done
-	tput el
-	lc_temp=$(mktemp)
-	(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until nc -nzw2 ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
-	sleep 0.01
-	while [ -f ${lc_temp} ] ; do
-		for num in 130 166 172 214 11 214 172 166 ; do
-			echo -en "\r\033[38;5;${num}mwaiting for port ${port} to come online.\033[0m\r"
-			sleep 0.12
+		tput el
+		lc_temp=$(mktemp)
+		(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until nc -nzw2 ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
+		sleep 0.05
+		while [ -f ${lc_temp} ] ; do
+			for num in 130 166 172 214 11 214 172 166 ; do
+				echo -en "\r\033[38;5;${num}mwaiting for port ${port} to come online.\033[0m\r"
+				sleep 0.12
+			done
 		done
-	done
-	tput el
+		tput el
+	fi
 }
