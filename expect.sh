@@ -8,7 +8,7 @@ trap {
 	stty rows $rows columns $cols < $spawn_out(slave,name)
 } WINCH
 
-spawn {*}$argv
+spawn -noecho {*}$argv
 expect {
 	eof { exit 1 }
 	timeout { puts "\n\nSorry, could not detect a valid prompt. Shelly is not available.\n" ; interact }
