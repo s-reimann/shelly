@@ -10,10 +10,10 @@
 #		$$$$$$\ $$ | \$$ |\$$$$$$  |			#
 #		\______|\__|  \__| \______/			#
 #								#
-#	  FILE:  inc						#
+#	   FILE:  inc						#
 #   DESCRIPTION:  used to include functions			#
 #								#
-#	AUTHOR:  Sascha Reimann				#
+#	 AUTHOR:  Sascha Reimann				#
 #   CONTRIBUTOR:  mrplow					#
 #								#
 #===============================================================#
@@ -75,7 +75,7 @@ valid_ip() {
 available() {
 	local avail_tmout=120
 	local host=${1}
-	if ! [[ "${host}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+	if ! valid_ip ${host} ; then
 		echo "the available function should only be invoked with an IP as 1st argument."
 		echo "The fact that you see this message most likely indicates a bug in a script using this function"
 		exit 1
@@ -90,8 +90,8 @@ available() {
 		local dots=(".  " ".. " "...")
 		while [ -f ${lc_temp} ] ; do
 			for steps in 22:130:52 28:166:88 34:172:124 40:214:160 46:11:196 40:214:160 34:172:124 28:166:88 ; do
-				step=(${steps//:/ })
-				avail_step=$(( $(printf '%(%s)T' -1) - ${avail_ts} ))
+				local step=(${steps//:/ })
+				local avail_step=$(( $(printf '%(%s)T' -1) - ${avail_ts} ))
 				if [[ ${avail_step} -le ${avail_tmout} ]] ; then
 					num=${step[0]}
 				elif [[ ${avail_step} -gt ${avail_tmout} ]] &&[[ ${avail_step} -le $(( ${avail_tmout} * 2 )) ]] ; then
@@ -113,7 +113,7 @@ available() {
 				((dot_c++))
 			fi
 		done
-		unset state_c step steps
+		unset lc_temp
 		tput el
 	fi
 }
