@@ -28,7 +28,7 @@ export LC_WHO_AM_I=$(whoami)
 #			 basic commands				#
 #===============================================================#
 # pre-flight checks
-for bin in $(echo "awk cat dig grep gzip nc ping script sed ssh tput tr"); do
+for bin in awk cat dig grep gzip nc ping script sed ssh tput tr; do
 	if ! [ -x "$(command -v ${bin})" ]; then echo "UNKNOWN: ${bin} not available, unable to determine status"; exit ${state_unknown}; fi
 done
 expect="${SHELLYBASE}/expect.sh"
@@ -101,7 +101,7 @@ available() {
 					num=${step[2]}
 					local extra_txt="a long time "
 				fi
-				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" $COLUMNS "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
+				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" $(tput cols) "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
 				sleep 0.125
 				if ! [ -f ${lc_temp} ] ; then
 					break
