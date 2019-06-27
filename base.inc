@@ -10,7 +10,7 @@
 #		$$$$$$\ $$ | \$$ |\$$$$$$  |			#
 #		\______|\__|  \__| \______/			#
 #								#
-#          FILE:  inc						#
+#          FILE:  base.inc					#
 #   DESCRIPTION:  used to include functions			#
 #								#
 #        AUTHOR:  Sascha Reimann				#
@@ -28,8 +28,8 @@ export LC_WHO_AM_I=$(whoami)
 #			 basic commands				#
 #===============================================================#
 # pre-flight checks
-for bin in $(echo "awk cat dig grep gzip nc ping script sed ssh tput tr"); do
-        if ! [ -x "$(command -v ${bin})" ]; then echo "UNKNOWN: ${bin} not available, unable to determine status"; exit ${state_unknown}; fi
+for bin in awk cat dig grep gzip nc ping script sed ssh tput tr; do
+	if ! [ -x "$(command -v ${bin})" ]; then echo "UNKNOWN: ${bin} not available, unable to determine status"; exit ${state_unknown}; fi
 done
 expect="${SHELLYBASE}/expect.sh"
 
@@ -56,7 +56,18 @@ c_res="\e[0m"
 #===============================================================#
 #			   functions				#
 #===============================================================#
-function valid_ip () {
+usage() {
+        echo "Usage: $0 hostname [port] [SSH options]"
+        exit 0
+}
+
+ctrlc() {
+        tput el
+        echo -e "\n\rCtrl+C pressed. Exiting... "
+        exit 1
+}
+
+valid_ip() {
 	local ip=$1
 	local stat=1
 	if [ "${ip}" != "" ] ; then
@@ -72,52 +83,48 @@ function valid_ip () {
 	return $stat
 }
 
-function type () {
-	# define text to print and control character
-	local text=$1
-	local cc=$2
-
-	# read characters one by one and print
-	for char in $(seq 0 $(( $(wc -c <<< ${text}) - 2 )) ); do
-		echo -n "${text:$char:1}"
-		pool=('0.01' '0.02')
-		time=${#pool[*]}
-		sleep ${pool[$((RANDOM % time))]}
-	done
-
-	# print control character
-	echo -en "\\${cc}"
-}
-
-function available () {
-        local host=${1}
-	if ! [[ "${host}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+available() {
+	local avail_tmout=120
+	local host=${1}
+	if ! valid_ip ${host} ; then
 		echo "the available function should only be invoked with an IP as 1st argument."
 		echo "The fact that you see this message most likely indicates a bug in a script using this function"
 		exit 1
 	fi
-        local port=${2:-22} # take given port or default 22
-	if ! nc -nzw1 ${host} ${port} &>/dev/null; then
-		# check if host is dead (-c = count, -W = timeout, -q = quiet)
+	local port=${2:-22} # take given port or default 22
+	if ! nc -w 1 -n -z ${host} ${port} &>/dev/null ; then
 		lc_temp=$(mktemp)
-		(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until ping -c1 -W1 -nq ${host} 2>&1 &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp} ) &
+		(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until nc -w 1 -n -z ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
 		sleep 0.05
+		local avail_ts=$(printf '%(%s)T' -1)
+		local dot_c=0
+		local dots=(".  " ".. " "...")
 		while [ -f ${lc_temp} ] ; do
-			for num in 52 88 124 160 196 160 124 88 ; do
-				echo -en "\r\033[38;5;${num}mwaiting for host to come online\033[0m\r"
-				sleep 0.12
+			for steps in 22:130:52 28:166:88 34:172:124 40:214:160 46:11:196 40:214:160 34:172:124 28:166:88 ; do
+				local step=(${steps//:/ })
+				local avail_step=$(( $(printf '%(%s)T' -1) - ${avail_ts} ))
+				if [[ ${avail_step} -le ${avail_tmout} ]] ; then
+					num=${step[0]}
+				elif [[ ${avail_step} -gt ${avail_tmout} ]] &&[[ ${avail_step} -le $(( ${avail_tmout} * 2 )) ]] ; then
+					num=${step[1]}
+					local extra_txt="some time "
+				else
+					num=${step[2]}
+					local extra_txt="a long time "
+				fi
+				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" ${COLUMNS} "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
+				sleep 0.125
+				if ! [ -f ${lc_temp} ] ; then
+					break
+				fi
 			done
+			if [ ${dot_c} = 2 ] ; then
+				dot_c=0
+			else
+				((dot_c++))
+			fi
 		done
-		tput el
-		lc_temp=$(mktemp)
-		(SUBPID=${$} ; trap "kill -INT -${SUBPID} ; exit 1" TERM INT ; until nc -nzw2 ${host} ${port} &>/dev/null ; do sleep 1 ; done ; rm ${lc_temp}) &
-		sleep 0.05
-		while [ -f ${lc_temp} ] ; do
-			for num in 130 166 172 214 11 214 172 166 ; do
-				echo -en "\r\033[38;5;${num}mwaiting for port ${port} to come online.\033[0m\r"
-				sleep 0.12
-			done
-		done
+		unset lc_temp
 		tput el
 	fi
 }
