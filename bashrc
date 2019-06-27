@@ -1,9 +1,13 @@
+shopt -s checkwinsize;
+red="\e[38;5;1m";
+green="\e[38;5;2m";
+yellow="\e[38;5;11m";
+orange="\e[38;5;208m";
+boldgreen="\e[38;5;10m";
+blue="\e[38;5;4m";
+white="\e[38;5;15m";
+normal="\e[0m";
 shelly_help() {
-	local green=$(tput setaf 2);
-	local yellow=$(tput setaf 3);
-	local blue=$(tput setaf 6);
-	local white=$(tput setaf 7);
-	local normal=$(tput sgr0);
 	echo -e "${green}Shelly(tm) On-System Commands${normal}\n";
 	echo -e "${blue}--- Tools ---${normal}\n";
 	echo -e "${yellow}maildel ${white}<pattern>${normal}\tSearch mailqueue for \$pattern and delete mails\n";
@@ -51,11 +55,6 @@ not_debian() {
 	fi;
 };
 colorcheck() {
-	red=$(tput setaf 1);
-	green=$(tput setaf 2);
-	boldgreen=$(tput setaf 2; tput bold);
-	orange=$(tput setaf 3);
-	normal=$(tput sgr0);
 	msg="$1";
 	status="$2";
 	case ${status} in
@@ -67,10 +66,6 @@ colorcheck() {
 	echo -en "[$msgcolor]";
 };
 log_msg() {
-	red=$(tput setaf 1);
-	green=$(tput setaf 2);
-	orange=$(tput setaf 3);
-	normal=$(tput sgr0);
 	msg="$1";
 	status="$2";
 	case ${status} in
@@ -87,7 +82,7 @@ log_msg() {
 			msgcolor="${orange}${msg}${normal}";
 			;;
 	esac;
-	let col=$(tput cols)-${#msg}+${#statuscolor}-${#status};
+	let col=${COLUMNS}-${#msg}+${#statuscolor}-${#status};
 	echo -n $msgcolor;
 	printf "%${col}s" "$statuscolor";
 };

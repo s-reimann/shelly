@@ -42,7 +42,7 @@ else
 fi
 
 usage() {
-	echo "Usage: $0 hostname [port] [SSH options]"
+	echo "Usage: $0 hostname [-l <user>] [-p <port>] [SSH options]"
 	exit 0
 }
 
@@ -60,13 +60,16 @@ if ! valid_ip ${ip}; then
 	exit 1
 fi
 
-while getopts "p:" opt > /dev/null 2>&1 ; do
+while getopts "p:l:" opt > /dev/null 2>&1 ; do
 	case ${opt} in
 		p)
 			port=${OPTARG}
+			;;
+		l)
+			user=${OPTARG}
 			;;
 	esac
 done
 
 available ${ip} ${port:-22}
-${expect} ssh -t ${ip} -p${port:-22} $@ "bash --noprofile"
+${expect} ssh -t ${ip} -l${user:-root} -p${port:-22} $@ "bash --noprofile"

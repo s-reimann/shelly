@@ -28,7 +28,7 @@ export LC_WHO_AM_I=$(whoami)
 #			 basic commands				#
 #===============================================================#
 # pre-flight checks
-for bin in awk cat dig grep gzip nc ping script sed ssh tput tr; do
+for bin in awk cat dig grep gzip nc ping script sed ssh tr; do
 	if ! [ -x "$(command -v ${bin})" ]; then echo "UNKNOWN: ${bin} not available, unable to determine status"; exit ${state_unknown}; fi
 done
 expect="${SHELLYBASE}/expect.sh"
@@ -62,8 +62,7 @@ usage() {
 }
 
 ctrlc() {
-        tput el
-        echo -e "\n\rCtrl+C pressed. Exiting... "
+        echo -e "\e[0m\n\rCtrl+C pressed. Exiting... "
         exit 1
 }
 
@@ -125,6 +124,6 @@ available() {
 			fi
 		done
 		unset lc_temp
-		tput el
+		echo -en "\e[0m"
 	fi
 }
