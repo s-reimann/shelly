@@ -17,8 +17,10 @@
 # CONTRIBUTOR:	mrplow 							#
 #									#
 #=======================================================================#
-
+set +o pipefail
+shopt -s checkwinsize
 SHELLYBASE=$(dirname $0)
+trap ctrlc INT
 
 # include variables and functions
 if ! [ -f ${SHELLYBASE}/base.inc ]; then

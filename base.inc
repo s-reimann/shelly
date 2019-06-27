@@ -56,6 +56,17 @@ c_res="\e[0m"
 #===============================================================#
 #			   functions				#
 #===============================================================#
+usage() {
+        echo "Usage: $0 hostname [port] [SSH options]"
+        exit 0
+}
+
+ctrlc() {
+        tput el
+        echo -e "\n\rCtrl+C pressed. Exiting... "
+        exit 1
+}
+
 valid_ip() {
 	local ip=$1
 	local stat=1
@@ -101,7 +112,7 @@ available() {
 					num=${step[2]}
 					local extra_txt="a long time "
 				fi
-				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" $(tput cols) "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
+				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" ${COLUMNS} "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
 				sleep 0.125
 				if ! [ -f ${lc_temp} ] ; then
 					break
