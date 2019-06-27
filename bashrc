@@ -69,22 +69,17 @@ log_msg() {
 	msg="$1";
 	status="$2";
 	case ${status} in
-		0)	status="[OK]";
-			statuscolor="$green${status}$normal";
-			msgcolor="${green}${msg}${normal}";
+		0)	status="OK";
+			statuscolor="${green}";
 			;;
-		1)	status="[CRITICAL]";
-			statuscolor="$red${status}$normal";
-			msgcolor="${red}${msg}${normal}";
+		1)	status="CRITICAL";
+			statuscolor="${red}";
 			;;
-		2)	status="[WARN]";
-			statuscolor="$orange${status}$normal";
-			msgcolor="${orange}${msg}${normal}";
+		2)	status="WARN";
+			statuscolor="${orange}";
 			;;
 	esac;
-	let col=${COLUMNS}-${#msg}+${#statuscolor}-${#status};
-	echo -n $msgcolor;
-	printf "%${col}s" "$statuscolor";
+	printf "\r${statuscolor}%*s${normal}${statuscolor}\r%s${normal}\n" ${COLUMNS} "[${status}]" "${msg}";
 };
 maildel() {
 	n="0";
