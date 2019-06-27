@@ -10,10 +10,10 @@
 #		$$$$$$\ $$ | \$$ |\$$$$$$  |			#
 #		\______|\__|  \__| \______/			#
 #								#
-#	   FILE:  inc						#
+#          FILE:  base.inc					#
 #   DESCRIPTION:  used to include functions			#
 #								#
-#	 AUTHOR:  Sascha Reimann				#
+#        AUTHOR:  Sascha Reimann				#
 #   CONTRIBUTOR:  mrplow					#
 #								#
 #===============================================================#
