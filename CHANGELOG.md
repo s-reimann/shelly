@@ -2,6 +2,27 @@
 
 All recent changes. Newest come first.
 
+## 2019-06-28
++ major changes:
+	- ssh.sh is now shelly.sh.
+	- expect (and therefore expect.sh) is not needed anymore. You won't see "eval $(echo "${LC_IDENTIFICATION}" | base64 -d); history -d $((HISTCMD-1))" anymore!
+	- new subdirectories:
+		- modules/ includes basic functions and personal configuration (ssh.conf is now modules/01-conf.sh).
+		- profiles/ can be used to individualize shelly for particular hosts.
+	- bashrc is now bashrc.sh, allow comments and lines do not need to end with a semicolon anymore.
+	- you can take a look at all shelly functions by executing "shelly help" on a remote system.
+	- shelly is now working for non-privileged users as well.
+		- if sudo is available, you can use the "become" function to get root and execute shelly afterwards.
+	- log_msg() and colorcheck() are now notify(). 
+		- updated color scheme (less colorful if there are no issues).
+	- sysupdate supports oracle linux now.
+	- removal of functions: maildel, sos
+	- new check_date function, as the old one was not working anymore
+	- some minor changes in a couple of functions.
+	- support for docker containers added.
+	- support for SELinux added.
+	- print_dns_info warns about unreachable caching dns servers.
+
 ## 2019-03-18
 + minor change: if the SSH port of a system is open, the available() function will immediately end.
 
