@@ -41,13 +41,9 @@ else
 	. ${SHELLYBASE}/ssh.conf
 fi
 
-usage() {
+if [ -z "${1}" ] || [ "${1}" = "-h" ] || [ "${1}" = "--help" ] ; then
 	echo "Usage: $0 hostname [-l <user>] [-p <port>] [SSH options]"
 	exit 0
-}
-
-if [ -z "${1}" ] || [ "${1}" = "-h" ] || [ "${1}" = "--help" ] ; then
-	usage
 fi
 
 host="${1}"; shift

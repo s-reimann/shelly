@@ -56,11 +56,6 @@ c_res="\e[0m"
 #===============================================================#
 #			   functions				#
 #===============================================================#
-usage() {
-        echo "Usage: $0 hostname [port] [SSH options]"
-        exit 0
-}
-
 ctrlc() {
         echo -e "\e[0m\n\rCtrl+C pressed. Exiting... "
         exit 1
