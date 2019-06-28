@@ -31,6 +31,8 @@ fi
 SHELLYMODULES=${SHELLYBASE}/modules
 if ! [ -f ${SHELLYMODULES}/00-base.sh ]; then
 	echo "${SHELLYMODULES}/00-base.sh missing!"; exit 1
+else
+	source ${SHELLYMODULES}/00-base.sh
 fi
 
 # quit if a required tool is missing
