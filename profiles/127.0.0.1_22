@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# few examples how to disable certain functions.
+#check_issues() { :; }
+#check_selinux() { :; }
+#check_users() { :; }
+# avoid hashtags in the last line as shelly would fail to execute then
+:
