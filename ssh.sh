@@ -22,15 +22,17 @@ shopt -s checkwinsize
 SHELLYBASE=$(dirname $0)
 trap ctrlc INT
 
-# include variables and functions
-if ! [ -f ${SHELLYBASE}/base.inc ]; then
-	echo "${SHELLYBASE}/base.inc missing!"
+# include variables and functions from modules
+SHELLYMODULES=${SHELLYBASE}/modules
+if ! [ -f ${SHELLYMODULES}/00-base.module ]; then
+	echo "${SHELLYMODULES}/base.module missing!"
 	exit 1
 else
-	. ${SHELLYBASE}/base.inc
-	# load additional custom includes as well
-	for file in inc/*.inc; do
-		[[ -f "$file" ]] && source $file
+	# load additional custom modules as well
+	for file in ${SHELLYMODULES}/*.module; do
+		if [[ -f "$file" ]] ; then
+			source $file
+		fi
 	done
 fi
 
@@ -41,13 +43,9 @@ else
 	. ${SHELLYBASE}/ssh.conf
 fi
 
-usage() {
-	echo "Usage: $0 hostname [port] [SSH options]"
-	exit 0
-}
-
 if [ -z "${1}" ] || [ "${1}" = "-h" ] || [ "${1}" = "--help" ] ; then
-	usage
+	echo "Usage: $0 hostname [-l <user>] [-p <port>] [SSH options]"
+	exit 0
 fi
 
 host="${1}"; shift
@@ -60,13 +58,16 @@ if ! valid_ip ${ip}; then
 	exit 1
 fi
 
-while getopts "p:" opt > /dev/null 2>&1 ; do
+while getopts "p:l:" opt > /dev/null 2>&1 ; do
 	case ${opt} in
 		p)
 			port=${OPTARG}
+			;;
+		l)
+			user=${OPTARG}
 			;;
 	esac
 done
 
 available ${ip} ${port:-22}
-${expect} ssh -t ${ip} -p${port:-22} $@ "bash --noprofile"
+${expect} ssh -t ${ip} -l${user:-root} -p${port:-22} $@ "bash --noprofile"

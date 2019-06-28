@@ -25,6 +25,8 @@ expect {
 			-re ~]\[$\] { puts "\n\nYou are not root! Shelly is not available\nPlease press return...\n"; interact }
 		}
 	}
+	"#" { send "$cmd1\r"; interact }
+	-re :~\[$\] { puts "\n\nYou are not root! Shelly is not available\nPlease press return...\n"; interact }
 
 	":~#" { send "$cmd1\r"; interact }
 	-re :~\[$\] { puts "\n\nYou are not root! Shelly is not available\nPlease press return...\n"; interact }
