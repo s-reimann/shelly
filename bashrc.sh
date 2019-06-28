@@ -163,7 +163,7 @@ notify() {
 		fi
 		echo -en "${color}[${msg}]${rset}"
 	elif [ $style = wide ]; then
-		printf "\r${color}%*s${rset}${color}\r%s${rset}\n" ${COLUMNS} "[${status}]" "${msg}";
+		printf "\r${color}%*s${rset}${color}\r%s${rset}\n" ${COLUMNS} "${status}" "${msg}";
 	elif [ $style = head ]; then
 		((head_counter++))
 		let spaces="16-${#msg}"
