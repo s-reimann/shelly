@@ -22,15 +22,17 @@ shopt -s checkwinsize
 SHELLYBASE=$(dirname $0)
 trap ctrlc INT
 
-# include variables and functions
-if ! [ -f ${SHELLYBASE}/base.inc ]; then
-	echo "${SHELLYBASE}/base.inc missing!"
+# include variables and functions from modules
+SHELLYMODULES=${SHELLYBASE}/modules
+if ! [ -f ${SHELLYMODULES}/00-base.module ]; then
+	echo "${SHELLYMODULES}/base.module missing!"
 	exit 1
 else
-	. ${SHELLYBASE}/base.inc
-	# load additional custom includes as well
-	for file in inc/*.inc; do
-		[[ -f "$file" ]] && source $file
+	# load additional custom modules as well
+	for file in ${SHELLYMODULES}/*.module; do
+		if [[ -f "$file" ]] ; then
+			source $file
+		fi
 	done
 fi
 
