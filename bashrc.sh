@@ -291,14 +291,14 @@ mailme() {
 new_screen() {
         if [ -x "$(command -v screen)" ]; then
                 unset TTY
-                TTY=$(tty|awk -F/ '{print $4}')
-                screen -dmS TTY${TTY}
-		screen -r TTY${TTY} -X backtick 1 0 0 echo "${USER}@${HOSTNAME}|$PRETTY_NAME | $(grep -c processor /proc/cpuinfo) CPU | $(awk '$1 == "MemTotal:" {printf("%.1f\n",$2/1024/1024);}' /proc/meminfo)GiB RAM | Load: $(awk "{print \$1}" /proc/loadavg)"
-                screen -r TTY${TTY} -X caption always
-                screen -r TTY${TTY} -X defscrollback 5000
-                screen -r TTY${TTY} -X vbell off
-                screen -r TTY${TTY} -X caption string '%{= bw}[ %1` ]'
-                screen -r TTY${TTY}
+                TTY=$(tty)
+                screen -dmS TTY${TTY:9}
+		screen -r TTY${TTY:9} -X backtick 1 0 0 echo "${USER}@${HOSTNAME}|$PRETTY_NAME | $(grep -c processor /proc/cpuinfo) CPU | $(awk '$1 == "MemTotal:" {printf("%.1f\n",$2/1024/1024);}' /proc/meminfo)GiB RAM | Load: $(awk "{print \$1}" /proc/loadavg)"
+                screen -r TTY${TTY:9} -X caption always
+                screen -r TTY${TTY:9} -X defscrollback 5000
+                screen -r TTY${TTY:9} -X vbell off
+                screen -r TTY${TTY:9} -X caption string '%{= bw}[ %1` ]'
+                screen -r TTY${TTY:9}
         fi
 }
 fix_pamsu() {
