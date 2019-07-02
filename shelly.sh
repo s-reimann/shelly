@@ -29,7 +29,7 @@ elif [ "${1}" = "-x" ]; then
 fi
 
 SHELLYMODULES=${SHELLYBASE}/modules
-if ! test -f ${SHELLYMODULES}/00-base.sh; then
+if ! [ -f ${SHELLYMODULES}/00-base.sh ]; then
 	echo "${SHELLYMODULES}/00-base.sh missing!"; exit 1
 else
 	source ${SHELLYMODULES}/00-base.sh
