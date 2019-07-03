@@ -640,7 +640,7 @@ check_disk_usage() {
 	df -x tmpfs -x overlay | grep -o -e "8.%.*"|while read percent mount; do
 		notify tile warn "$mount ($percent)";
 	done
-	df -x tmpfs -x overlay | grep -o -e "9.%.*" -e "100%.*"|while read prct mnt; do
+	df -x tmpfs -x overlay | grep -o -e "9.%.*" -e "100%.*"|while read percent mount; do
 		notify tile crit "$mount ($percent)"
 	done
 }
