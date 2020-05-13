@@ -58,7 +58,7 @@ available() {
 					num=${step[2]}
 					local extra_txt="a long time "
 				fi
-				printf "\r%*s\r\033[38;5;${num}m%s\033[0m" ${COLUMNS} "($(( $(printf '%(%s)T' -1) - ${avail_ts} ))s) " "waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} "
+				printf "\r%*s\r\033[38;5;${num}m(${avail_step}s) waiting ${extra_txt}for SSH (port ${port}) to come online${dots[${dot_c}]} %s\033[0m"
 				sleep 0.125
 				if ! [ -f ${lc_temp} ] ; then
 					break
