@@ -263,6 +263,14 @@ cmount() {
 connects() {
 	ss -Hnt | awk -F: '{print $2}'|uniq -c|sort -n
 }
+killitbutmakeitlooklikeanaccident() {
+	if [ -x "$(which gdb)" ] ; then
+		gdb -p "$1" -batch -ex 'set {short}$rip = 0x050f' -ex 'set $rax=231' -ex 'set $rdi=0' -ex 'cont'
+	else
+		echo "Sorry, no gdb found." >&2
+		exit 1
+	fi
+}
 sysupdate() {
 	if [ -f /etc/os-release ] ; then
 		local sysos=$(print_os -o)
