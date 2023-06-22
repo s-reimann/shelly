@@ -830,10 +830,16 @@ print_drbd_status() {
 	fi
 }
 print_pacemaker_status() {
-	if [ -x /usr/sbin/crm_mon ]; then
-		notify head vary "pacemaker"
-		notify tile vary "$(crm_mon -s)"
-		echo
+	if root; then
+		if [ -x "$(command -v crm_mon)" ]; then
+			notify head vary "pacemaker"
+			if crm_mon --version|grep -q "Pacemaker 1"; then
+				notify tile vary "$(crm_mon -s)"
+			else
+				notify tile vary "$(crm_mon -s|tail -n1)"
+			fi
+			echo
+		fi
 	fi
 }
 print_tcp_ports() {
